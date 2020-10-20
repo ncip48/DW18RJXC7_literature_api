@@ -150,30 +150,21 @@ exports.getDetailLiterature = async (req, res) => {
   }
 };
 
-exports.addBooks = async (req, res) => {
+exports.addLiterature = async (req, res) => {
   const { role } = req.user;
   const { id } = req.user;
   try {
-    const {
-      title,
-      publication,
-      pages,
-      ISBN,
-      id_category,
-      aboutBook,
-      status,
-    } = req.body;
+    const { title, publication_date, pages, isbn, author, status } = req.body;
     const thumbnail = req.files["thumbnail"][0].filename;
-    const file = req.files["file"][0].filename;
-    const books = await Literature.create({
+    const attache = req.files["attache"][0].filename;
+    const literature = await Literature.create({
       title,
-      publication,
-      id_category,
-      id_user: id,
+      publication_date,
+      userId: id,
       pages,
-      ISBN,
-      aboutBook,
-      file,
+      isbn,
+      author,
+      attache,
       thumbnail,
       status:
         status === null || status === ""
@@ -183,22 +174,15 @@ exports.addBooks = async (req, res) => {
           : status,
     });
 
-    if (books) {
-      const bookResult = await Literature.findOne({
+    if (literature) {
+      const literatureResult = await Literature.findOne({
         where: {
-          id: books.id,
+          id: literature.id,
         },
         include: [
           {
-            model: Category,
-            as: "category",
-            attributes: {
-              exclude: ["createdAt", "updatedAt"],
-            },
-          },
-          {
             model: User,
-            as: "userId",
+            as: "user",
             attributes: {
               exclude: ["createdAt", "updatedAt"],
             },
@@ -207,7 +191,7 @@ exports.addBooks = async (req, res) => {
         attributes: {
           exclude: [
             "CategoryId",
-            "UserId",
+            "userId",
             "id_user",
             "id_category",
             "createdAt",
@@ -216,9 +200,9 @@ exports.addBooks = async (req, res) => {
         },
       });
       res.send({
-        message: `Books successfully added`,
+        message: `Literature successfully added`,
         data: {
-          Literature: bookResult,
+          literature: literatureResult,
         },
       });
     }
@@ -233,30 +217,23 @@ exports.addBooks = async (req, res) => {
   }
 };
 
-exports.updateBooks = async (req, res) => {
+exports.updateLiterature = async (req, res) => {
   try {
     const { id } = req.params;
-    const Literature = await Literature.update(req.body, {
+    const literature = await Literature.update(req.body, {
       where: {
         id,
       },
     });
-    if (Literature) {
-      const bookResult = await Literature.findOne({
+    if (literature) {
+      const literatureResult = await Literature.findOne({
         where: {
           id,
         },
         include: [
           {
-            model: Category,
-            as: "category",
-            attributes: {
-              exclude: ["createdAt", "updatedAt"],
-            },
-          },
-          {
             model: User,
-            as: "userId",
+            as: "user",
             attributes: {
               exclude: ["createdAt", "updatedAt"],
             },
@@ -274,14 +251,14 @@ exports.updateBooks = async (req, res) => {
         },
       });
       res.send({
-        message: `Books with id ${id} has been successfully edited`,
+        message: `Literature with id ${id} has been successfully edited`,
         data: {
-          books: bookResult,
+          books: literatureResult,
         },
       });
     } else {
       res.status(400).send({
-        message: "Error while updating books",
+        message: "Error while updating Literature",
       });
     }
   } catch (err) {

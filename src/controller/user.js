@@ -101,15 +101,8 @@ exports.updatePhotoProfile = async (req, res) => {
     );
     const user = await User.findOne({
       include: {
-        model: Book,
-        as: "books",
-        include: {
-          model: Category,
-          as: "category",
-          attributes: {
-            exclude: ["createdAt", "updatedAt"],
-          },
-        },
+        model: Literature,
+        as: "literatures",
         attributes: {
           exclude: [
             "CategoryId",

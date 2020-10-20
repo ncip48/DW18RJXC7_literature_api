@@ -25,10 +25,10 @@ module.exports = (sequelize, DataTypes) => {
       //   },
       // });
       //User.hasOne(models.Book);
-      User.hasMany(models.Book, {
-        as: "books",
+      User.hasMany(models.Literature, {
+        as: "literatures",
         foreignKey: {
-          name: "id_user",
+          name: "userId",
         },
       });
     }

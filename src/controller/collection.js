@@ -1,6 +1,6 @@
 const { Literature, Collection, User } = require("../../models");
 
-exports.myLiterature = async (req, res) => {
+exports.myCollection = async (req, res) => {
   try {
     const { id } = req.user;
     const collection = await Collection.findAll({
@@ -51,7 +51,7 @@ exports.myLiterature = async (req, res) => {
   }
 };
 
-exports.addLibrary = async (req, res) => {
+exports.addCollection = async (req, res) => {
   try {
     const { id } = req.user;
 
@@ -59,7 +59,7 @@ exports.addLibrary = async (req, res) => {
     const check = await Collection.findOne({
       where: {
         userId: req.user.id,
-        bookId: req.body.bookId,
+        literatureId: req.body.literatureId,
       },
       attributes: {
         exclude: ["createdAt", "updatedAt", "password"],
@@ -70,7 +70,7 @@ exports.addLibrary = async (req, res) => {
     if (check) {
       return res.status(400).send({
         error: {
-          message: "Books has been already added to library",
+          message: "Literature has been already added to library",
         },
       });
     }
@@ -78,7 +78,7 @@ exports.addLibrary = async (req, res) => {
     //if not in library
     await Collection.create({
       userId: req.user.id,
-      bookId: req.body.bookId,
+      literatureId: req.body.literatureId,
     });
     res.send({
       message: "Your Literature has been added successfully",
@@ -93,13 +93,12 @@ exports.addLibrary = async (req, res) => {
   }
 };
 
-exports.deleteLibrary = async (req, res) => {
+exports.deleteCollection = async (req, res) => {
   try {
-    const { id } = req.user;
+    //const { id } = req.user;
     await Collection.destroy({
       where: {
-        userId: req.user.id,
-        bookId: req.params.id,
+        id: req.params.id,
       },
     });
     res.send({

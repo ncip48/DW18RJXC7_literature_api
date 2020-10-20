@@ -17,9 +17,15 @@ const {
   getLiterature,
   getLiteratureByTitle,
   getDetailLiterature,
+  addLiterature,
+  updateLiterature,
 } = require("../controller/literature");
 
-const { myLiterature } = require("../controller/collection");
+const {
+  myCollection,
+  addCollection,
+  deleteCollection,
+} = require("../controller/collection");
 
 const { authenticated } = require("../middleware/authentication");
 
@@ -45,9 +51,13 @@ router.get("/auth", authenticated, checkAuth);
 
 router.get("/literatures", authenticated, getLiterature);
 router.get("/literature", authenticated, getLiteratureByTitle);
+router.post("/literature", uploadKhususAddBook(), authenticated, addLiterature);
 router.get("/literature/:id", authenticated, getDetailLiterature);
+router.patch("/literature/:id", authenticated, updateLiterature);
 
-router.get("/collection/:id", authenticated, myLiterature);
+router.get("/collection/:id", authenticated, myCollection);
+router.post("/collection/", authenticated, addCollection);
+router.delete("/collection/:id", authenticated, deleteCollection);
 
 // router.get("/my-library", authenticated, myLibrary);
 // router.post("/my-library", authenticated, addLibrary);

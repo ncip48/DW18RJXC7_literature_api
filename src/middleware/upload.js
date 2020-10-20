@@ -113,7 +113,7 @@ exports.uploadKhususAddBook = () => {
 
   var cpUpload = multer({
     storage: storage,
-  }).fields([{ name: "thumbnail" }, { name: "file" }]);
+  }).fields([{ name: "thumbnail" }, { name: "attache" }]);
 
   return (req, res, next) => {
     cpUpload(req, res, function (err) {
