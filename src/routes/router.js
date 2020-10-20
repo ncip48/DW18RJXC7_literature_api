@@ -1,7 +1,5 @@
 const express = require("express");
 const router = express.Router();
-var multer = require("multer");
-var upload = multer({ dest: "src/uploads" });
 
 const { uploadImage, uploadKhususAddBook } = require("../middleware/upload");
 
