@@ -10,7 +10,7 @@ exports.getLiterature = async (req, res) => {
           model: User,
           as: "user",
           attributes: {
-            exclude: ["createdAt", "updatedAt"],
+            exclude: ["createdAt", "updatedAt", "password"],
           },
         },
       ],
@@ -134,6 +134,15 @@ exports.getDetailLiterature = async (req, res) => {
         id,
       },
     });
+
+    if (!literature) {
+      return res.status(500).send({
+        error: {
+          message: `Literatures not found with id ${id}`,
+        },
+      });
+    }
+
     res.send({
       message: `Literature with id ${id} loaded successfully`,
       data: {
@@ -157,6 +166,40 @@ exports.addLiterature = async (req, res) => {
     const { title, publication_date, pages, isbn, author, status } = req.body;
     const thumbnail = req.files["thumbnail"][0].filename;
     const attache = req.files["attache"][0].filename;
+
+    const checkISBN = await Literature.findOne({
+      include: [
+        {
+          model: User,
+          as: "user",
+          attributes: {
+            exclude: ["createdAt", "updatedAt"],
+          },
+        },
+      ],
+      attributes: {
+        exclude: [
+          "CategoryId",
+          "UserId",
+          "id_user",
+          "id_category",
+          "createdAt",
+          "updatedAt",
+        ],
+      },
+      where: {
+        isbn: req.body.isbn,
+      },
+    });
+
+    if (checkISBN) {
+      return res.status(500).send({
+        error: {
+          message: "ISBN already exist",
+        },
+      });
+    }
+
     const literature = await Literature.create({
       title,
       publication_date,

@@ -47,7 +47,7 @@ router.get("/auth", authenticated, checkAuth);
 // router.delete("/book/:id", authenticated, deleteBooks);
 // router.patch("/book/:id", authenticated, updateBooks);
 
-router.get("/literatures", authenticated, getLiterature);
+router.get("/literatures", getLiterature);
 router.get("/literature", authenticated, getLiteratureByTitle);
 router.post("/literature", uploadKhususAddBook(), authenticated, addLiterature);
 router.get("/literature/:id", authenticated, getDetailLiterature);

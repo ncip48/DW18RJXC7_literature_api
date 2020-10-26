@@ -35,6 +35,15 @@ exports.detailUser = async (req, res) => {
         exclude: ["createdAt", "updatedAt", "password"],
       },
     });
+
+    if (!user) {
+      return res.status(500).send({
+        error: {
+          message: `User not found with id ${id}`,
+        },
+      });
+    }
+
     res.send({
       message: "Response success, user loaded successfully",
       data: {

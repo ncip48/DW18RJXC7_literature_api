@@ -110,65 +110,109 @@ exports.addBooks = async (req, res) => {
       aboutBook,
       status,
     } = req.body;
-    const thumbnail = req.files["thumbnail"][0].filename;
-    const file = req.files["file"][0].filename;
-    const books = await Book.create({
-      title,
-      publication,
-      id_category,
-      id_user: id,
-      pages,
-      ISBN,
-      aboutBook,
-      file,
-      thumbnail,
-      status:
-        status === null || status === ""
-          ? role === 1
-            ? "Approved"
-            : "Waiting"
-          : status,
+
+    const checkISBN = await Book.findOne({
+      include: [
+        {
+          model: Category,
+          as: "category",
+          attributes: {
+            exclude: ["createdAt", "updatedAt"],
+          },
+        },
+        {
+          model: User,
+          as: "userId",
+          attributes: {
+            exclude: ["createdAt", "updatedAt"],
+          },
+        },
+      ],
+      attributes: {
+        exclude: [
+          "CategoryId",
+          "UserId",
+          "id_user",
+          "id_category",
+          "createdAt",
+          "updatedAt",
+        ],
+      },
+      where: {
+        isbn: req.body.isbn,
+      },
     });
 
-    if (books) {
-      const bookResult = await Book.findOne({
-        where: {
-          id: books.id,
-        },
-        include: [
-          {
-            model: Category,
-            as: "category",
-            attributes: {
-              exclude: ["createdAt", "updatedAt"],
-            },
-          },
-          {
-            model: User,
-            as: "userId",
-            attributes: {
-              exclude: ["createdAt", "updatedAt"],
-            },
-          },
-        ],
-        attributes: {
-          exclude: [
-            "CategoryId",
-            "UserId",
-            "id_user",
-            "id_category",
-            "createdAt",
-            "updatedAt",
-          ],
-        },
-      });
-      res.send({
-        message: `Books successfully added`,
-        data: {
-          book: bookResult,
-        },
-      });
-    }
+    console.log(checkISBN);
+
+    // if (checkISBN) {
+    //   return res.status(500).send({
+    //     error: {
+    //       message: "Server ERROR",
+    //       error: "ISBN already exist",
+    //     },
+    //   });
+    // }
+
+    // const thumbnail = req.files["thumbnail"][0].filename;
+    // const file = req.files["file"][0].filename;
+    // const books = await Book.create({
+    //   title,
+    //   publication,
+    //   id_category,
+    //   id_user: id,
+    //   pages,
+    //   ISBN,
+    //   aboutBook,
+    //   file,
+    //   thumbnail,
+    //   status:
+    //     status === null || status === ""
+    //       ? role === 1
+    //         ? "Approved"
+    //         : "Waiting"
+    //       : status,
+    // });
+
+    // if (books) {
+    //   const bookResult = await Book.findOne({
+    //     where: {
+    //       id: books.id,
+    //     },
+    //     include: [
+    //       {
+    //         model: Category,
+    //         as: "category",
+    //         attributes: {
+    //           exclude: ["createdAt", "updatedAt"],
+    //         },
+    //       },
+    //       {
+    //         model: User,
+    //         as: "userId",
+    //         attributes: {
+    //           exclude: ["createdAt", "updatedAt"],
+    //         },
+    //       },
+    //     ],
+    //     attributes: {
+    //       exclude: [
+    //         "CategoryId",
+    //         "UserId",
+    //         "id_user",
+    //         "id_category",
+    //         "createdAt",
+    //         "updatedAt",
+    //       ],
+    //     },
+    //   });
+    //   res.send({
+    //     message: `Books successfully added`,
+    //     data: {
+    //       book: bookResult,
+    //     },
+    //   });
+    // }
   } catch (err) {
     console.log(err);
     res.status(500).send({
