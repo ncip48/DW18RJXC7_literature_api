@@ -9,6 +9,7 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       role: {
+        allowNull: false,
         type: Sequelize.INTEGER,
         defaultValue: 0,
       },
