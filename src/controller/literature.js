@@ -69,6 +69,7 @@ exports.getLiterature = async (req, res) => {
 exports.getLiteratureByTitle = async (req, res) => {
   let title = req.query.title;
   let public_year = req.query.public_year;
+  let status = req.query.status;
   try {
     if (public_year) {
       const literature = await Literature.findAll({
@@ -90,6 +91,9 @@ exports.getLiteratureByTitle = async (req, res) => {
           },
           publication_date: {
             [Op.like]: "%" + public_year + "%",
+          },
+          status: {
+            [Op.like]: "%" + status + "%",
           },
         },
         order: [["id", "DESC"]],
@@ -117,6 +121,9 @@ exports.getLiteratureByTitle = async (req, res) => {
         where: {
           title: {
             [Op.like]: "%" + title + "%",
+          },
+          status: {
+            [Op.like]: "%" + status + "%",
           },
         },
         order: [["id", "DESC"]],
