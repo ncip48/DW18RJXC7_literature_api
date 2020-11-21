@@ -12,6 +12,7 @@ const {
   detailUser,
   updatePhotoProfile,
   getUserLiterature,
+  deleteUser,
 } = require("../controller/user");
 
 const { register, login, checkAuth } = require("../controller/auth");
@@ -41,6 +42,7 @@ router.patch(
   authenticated,
   updatePhotoProfile
 );
+router.delete("/user/:id", deleteUser);
 
 router.post("/register", register);
 router.post("/login", login);
