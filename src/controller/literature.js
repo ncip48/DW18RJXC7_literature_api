@@ -3,28 +3,59 @@ const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 
 exports.getLiterature = async (req, res) => {
+  let { status } = req.query;
   try {
-    const literature = await Literature.findAll({
-      include: [
-        {
-          model: User,
-          as: "user",
-          attributes: {
-            exclude: ["createdAt", "updatedAt", "password"],
+    if (status) {
+      const literature = await Literature.findAll({
+        include: [
+          {
+            model: User,
+            as: "user",
+            attributes: {
+              exclude: ["createdAt", "updatedAt", "password"],
+            },
+          },
+        ],
+        attributes: {
+          exclude: ["CategoryId", "UserId", "createdAt", "updatedAt"],
+        },
+
+        where: {
+          status: {
+            [Op.like]: "%" + status + "%",
           },
         },
-      ],
-      attributes: {
-        exclude: ["CategoryId", "UserId", "createdAt", "updatedAt"],
-      },
-      order: [["id", "DESC"]],
-    });
-    res.send({
-      message: "Literature loaded successfully",
-      data: {
-        literatures: literature,
-      },
-    });
+        order: [["id", "DESC"]],
+      });
+      res.send({
+        message: "Literature loaded successfully",
+        data: {
+          literatures: literature,
+        },
+      });
+    } else {
+      const literature = await Literature.findAll({
+        include: [
+          {
+            model: User,
+            as: "user",
+            attributes: {
+              exclude: ["createdAt", "updatedAt", "password"],
+            },
+          },
+        ],
+        attributes: {
+          exclude: ["CategoryId", "UserId", "createdAt", "updatedAt"],
+        },
+        order: [["id", "DESC"]],
+      });
+      res.send({
+        message: "Literature loaded successfully",
+        data: {
+          literatures: literature,
+        },
+      });
+    }
   } catch (err) {
     console.log(err);
     res.status(500).send({
@@ -337,4 +368,12 @@ exports.deleteBooks = async (req, res) => {
       },
     });
   }
+};
+
+exports.testUpload = async (req, res) => {
+  const file = req.file.filename.split("/")[2];
+  // console.log(req.file.filename.split("/")[2]);
+  res.send({
+    file,
+  });
 };

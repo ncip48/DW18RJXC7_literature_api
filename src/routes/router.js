@@ -1,7 +1,11 @@
 const express = require("express");
 const router = express.Router();
 
-const { uploadImage, uploadKhususAddBook } = require("../middleware/upload");
+const {
+  uploadImage,
+  uploadKhususAddBook,
+  cloudUpload,
+} = require("../middleware/upload");
 
 const {
   getUser,
@@ -17,6 +21,7 @@ const {
   getDetailLiterature,
   addLiterature,
   updateLiterature,
+  testUpload,
 } = require("../controller/literature");
 
 const {
@@ -56,6 +61,8 @@ router.patch("/literature/:id", authenticated, updateLiterature);
 router.get("/collection/:id", authenticated, myCollection);
 router.post("/collection/", authenticated, addCollection);
 router.delete("/collection/:id", authenticated, deleteCollection);
+
+router.post("/test-upload", authenticated, cloudUpload("attache"), testUpload);
 
 // router.get("/my-library", authenticated, myLibrary);
 // router.post("/my-library", authenticated, addLibrary);

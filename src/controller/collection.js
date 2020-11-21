@@ -27,6 +27,9 @@ exports.myCollection = async (req, res) => {
             "file",
           ],
         },
+        where: {
+          status: "Approved",
+        },
       },
       where: {
         userId: id,
