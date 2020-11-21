@@ -92,6 +92,7 @@ exports.register = async (req, res) => {
     //create user
     const user = await User.create({
       email,
+      role: 0,
       password: hashPassword,
       fullName,
       gender,
